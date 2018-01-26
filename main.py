@@ -16,6 +16,12 @@ def solve(boardData, solution):
             solution.append([])
             for j in range(len(boardData)):
                 solution[i].append(0)
+    else:
+        for i in range(len(boardData)):
+            for j in range(len(boardData)):
+                if solution[i][j] != 0:
+                    solution[i][j] += 1
+    print(solution)
     toSolve = input('Enter the words to find :').split()
     print(toSolve)
     for i in range(len(boardData)):
@@ -96,9 +102,6 @@ def draw(Data, solution):
 
     black = (0, 0, 0)
     white = (255, 255, 255)
-    blue = (0, 0, 255)
-    red = [255, 0, 0]
-    green = [0, 255, 0]
 
 
     pygame.init()
@@ -106,6 +109,7 @@ def draw(Data, solution):
     screen = pygame.display.set_mode((screenx, screeny))
     pygame.display.set_caption("Cross Word Solution")
     screen.fill(black)
+    print(solution)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -114,18 +118,17 @@ def draw(Data, solution):
     for i in range(len(Data)):
         mult = 20
         for j in range(len(Data)):
-            x = random.randrange(34,255)
-            y = random.randrange(34,255)
-            z = random.randrange(34,255)
-            color = (x, y, z)
             myfont = pygame.font.SysFont("arial", 13)
             if solution[j][i] == 0:
                 label = myfont.render(str(Data[j][i]), 2, white)
-            elif solution[j][i] == 1:
+                screen.blit(label, (i * mult,j*mult ))
+            else:
+                color = (255 - (solution[j][i] * 30)%255, 255 - (solution[j][i] * 50)%255, 255- (solution[j][i]*70)%255)
+                print(color)
                 label = myfont.render(str(Data[j][i]), 2, color)
-
-            screen.blit(label, (i * mult, j * mult))
+                screen.blit(label, (i * mult, j * mult))
     pygame.display.update()
+    print('complete')
 
 
 boardData = getInput()
