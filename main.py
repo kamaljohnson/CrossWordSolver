@@ -1,21 +1,23 @@
 import pygame   #for drawing the board
+import random
 def getInput():
     boardData = []
-    size = int(input("enter the size :"))
     print("Enter the data :\n")
-    for i in range(size):
+    boardData.append(input().split())
+    size = len(boardData[0])
+    for i in range(size-1):
         boardData.append(input().split())
     return boardData
-def solve(boardData):
+def solve(boardData, solution):
 
-    solution = []
     size = len(boardData)
+    if solution == []:
+        for i in range(len(boardData)):
+            solution.append([])
+            for j in range(len(boardData)):
+                solution[i].append(0)
     toSolve = input('Enter the words to find :').split()
     print(toSolve)
-    for i in range(len(boardData)):
-        solution.append([])
-        for j in range(len(boardData)):
-            solution[i].append(0)
     for i in range(len(boardData)):
         solution.append([])
         for j in range(len(boardData)):
@@ -89,39 +91,45 @@ def solve(boardData):
     return solution
 
 def draw(Data, solution):
-    mult = 40
+    mult = 20
     size = len(Data)
 
     black = (0, 0, 0)
     white = (255, 255, 255)
-    green = (0, 0, 255)
+    blue = (0, 0, 255)
+    red = [255, 0, 0]
+    green = [0, 255, 0]
+
 
     pygame.init()
     screenx, screeny = (size * mult, size * mult)
     screen = pygame.display.set_mode((screenx, screeny))
     pygame.display.set_caption("Cross Word Solution")
     screen.fill(black)
-    while(True):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+            exit(0)
+    for i in range(len(Data)):
+        mult = 20
+        for j in range(len(Data)):
+            x = random.randrange(34,255)
+            y = random.randrange(34,255)
+            z = random.randrange(34,255)
+            color = (x, y, z)
+            myfont = pygame.font.SysFont("arial", 13)
+            if solution[j][i] == 0:
+                label = myfont.render(str(Data[j][i]), 2, white)
+            elif solution[j][i] == 1:
+                label = myfont.render(str(Data[j][i]), 2, color)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-                exit(0)
-        for i in range(len(Data)):
-            mult = 40
-            for j in range(len(Data)):
-                myfont = pygame.font.SysFont("arial", 15)
-                if solution[j][i] == 0:
-                    label = myfont.render(str(Data[j][i]), 2, white)
-                else:
-                    label = myfont.render(str(Data[j][i]), 2, green)
-                screen.blit(label, (i * mult, j * mult))
-        pygame.display.update()
-
-
+            screen.blit(label, (i * mult, j * mult))
+    pygame.display.update()
 
 
 boardData = getInput()
-solution = solve(boardData)
-draw(boardData, solution)
+solution = []
+while True:
+    solution = solve(boardData, solution)
+    draw(boardData, solution)
