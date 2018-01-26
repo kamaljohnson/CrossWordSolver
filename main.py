@@ -1,12 +1,13 @@
 import pygame   #for drawing the board
 import random
+
 def getInput():
     boardData = []
     print("Enter the data :\n")
-    boardData.append(input().split())
+    boardData.append(list(input()))
     size = len(boardData[0])
     for i in range(size-1):
-        boardData.append(input().split())
+        boardData.append(list(input()))
     return boardData
 def solve(boardData, solution, base):
 
@@ -16,11 +17,10 @@ def solve(boardData, solution, base):
             if solution[i][j] != 0:
                 if solution[i][j] >= base:
                     base = solution[i][j] + 1
-    toSolve = input('Enter the word to find :')
-    for i in range(len(boardData)):
-        solution.append([])
-        for j in range(len(boardData)):
-            for word in toSolve:
+    word = input('Enter the word to find :')
+    if word != '':
+        for i in range(len(boardData)):
+            for j in range(len(boardData)):
                 wordl = list(word)
                 if wordl[0] == boardData[i][j]:
                     trav = 1
@@ -41,7 +41,7 @@ def solve(boardData, solution, base):
                             flag = -1
                             break
                     if flag == 1:
-                        toSolve.remove(word)
+                        #toSolve.remove(word)
                         for q in range(wordLength):
                             solution[i][j+q] = base
                     else:
@@ -54,7 +54,7 @@ def solve(boardData, solution, base):
                                 flag = -1
                                 break
                         if flag == 1:
-                            toSolve.remove(word)
+                            #toSolve.remove(word)
                             for q in range(wordLength):
                                 solution[i+q][j] = base
                         else:
@@ -67,7 +67,7 @@ def solve(boardData, solution, base):
                                     flag = -1
                                     break
                             if flag == 1:
-                                toSolve.remove(word)
+                                #toSolve.remove(word)
                                 for q in range(wordLength):
                                     solution[i + q][j-q] = base
                             else:
@@ -80,16 +80,12 @@ def solve(boardData, solution, base):
                                         flag = -1
                                         break
                                 if flag == 1:
-                                    toSolve.remove(word)
+                                    #toSolve.remove(word)
                                     for q in range(wordLength):
                                         solution[i + q][j + q] = base
-                                else:
-                                    if solution[i][j] != 1:
-                                        solution[i][j] = 0
     return [solution, base]
-
 def draw(Data, solution):
-    mult = 20
+    mult = 35
     size = len(Data)
 
     black = (0, 0, 0)
@@ -102,7 +98,6 @@ def draw(Data, solution):
         (255, 0, 0),
         (102, 255, 255),
         (0, 0, 255),
-        (0, 41, 41)
     ]
 
     pygame.init()
@@ -116,28 +111,31 @@ def draw(Data, solution):
             pygame.quit()
             exit(0)
     for i in range(len(Data)):
-        mult = 20
+        mult = 35
         for j in range(len(Data)):
-            myfont = pygame.font.SysFont("arial", 13)
+            font = pygame.font.SysFont("arial", 22)
+            solfont = pygame.font.SysFont("arial", 25)
             if solution[j][i] == 0:
-                label = myfont.render(str(Data[j][i]), 2, white)
+                label = font.render(str(Data[j][i]), 2, white)
                 screen.blit(label, (i * mult,j*mult ))
             else:
                 color = listOfColors[solution[j][i]%len(listOfColors)]
-                print(color)
-                label = myfont.render(str(Data[j][i]), 2, color)
+                label = solfont.render(str(Data[j][i]), 2, color)
                 screen.blit(label, (i * mult, j * mult))
     pygame.display.update()
-
+def initialise():
+    solution = []
+    for i in range(len(boardData)):
+        solution.append([])
+        for j in range(len(boardData)):
+            solution[i].append(0)
+    base = 1
+    return [solution, base]
 
 boardData = getInput()
-solution = []
-for i in range(len(boardData)):
-    solution.append([])
-    for j in range(len(boardData)):
-        solution[i].append(0)
-base = 1
+solution, base = initialise()
 while True:
     print(base)
     draw(boardData, solution)
+    temp = base
     solution, base = solve(boardData, solution, base)
